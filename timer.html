@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>タイマー</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 0 80px;
+      background-color: #e8a0a0;
+      transition: background-color 0.4s ease;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      touch-action: manipulation;
+    }
+
+    #spacer {
+      flex: 1;
+    }
+
+    #number {
+      font-size: min(55vw, 55vh);
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.15);
+      user-select: none;
+    }
+
+    #start-btn {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(4px);
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 28px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      transition: transform 0.1s, background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #start-btn:active {
+      transform: scale(0.93);
+      background: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="spacer"></div>
+  <div id="number">-</div>
+  <div id="spacer"></div>
+  <button id="start-btn">開始</button>
+
+  <script>
+    const COLORS = ['#e8a0a0', '#8eb8e0', '#8ec8a0'];
+    // red, blue, green — softened pastels
+    // cycle: red → blue → red → blue (green reserved for future or just red/blue)
+
+    const numberEl = document.getElementById('number');
+    const btn = document.getElementById('start-btn');
+
+    let count = 0;
+    let colorIndex = 0;
+    let intervalId = null;
+    let running = false;
+
+    function setColor(idx) {
+      document.body.style.backgroundColor = COLORS[idx % 3];
+    }
+
+    function tick() {
+      count++;
+      if (count > 10) {
+        count = 1;
+        colorIndex++;
+        setColor(colorIndex);
+      }
+      numberEl.textContent = count;
+    }
+
+    btn.addEventListener('click', () => {
+      if (!running) {
+        running = true;
+        btn.textContent = '停止';
+        count = 0;
+        colorIndex = 0;
+        setColor(colorIndex);
+        tick();
+        intervalId = setInterval(tick, 1000);
+      } else {
+        running = false;
+        btn.textContent = '開始';
+        clearInterval(intervalId);
+        intervalId = null;
+        numberEl.textContent = '-';
+        count = 0;
+        colorIndex = 0;
+        setColor(0);
+      }
+    });
+  </script>
+</body>
+</html>
